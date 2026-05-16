@@ -1,0 +1,32 @@
+{
+  "coc.preferences.useQuickfixForLocations": true,
+  "suggest.snippetIndicator": "🍦",
+  "clojure-lsp.trace.server": "verbose",
+  "diagnostic.showUnused": true,
+  "diagnostic.showDeprecated": true,
+  "suggest.autoTrigger": "none",
+  "suggest.floatEnable": "false",
+  "signature.target": "echo",
+  "languageserver": {
+    "clojure-lsp": {
+      "command": "/usr/local/bin/clojure-lsp",
+      "filetypes": ["clojure"],
+      "rootPatterns": ["project.clj", "deps.edn"],
+      "additionalSchemes": ["jar", "zipfile"],
+      "trace.server": "verbose",
+      "diagnostic.showUnused": true,
+      "diagnostic.showDeprecated": true,
+      "diagnostic.highlightPriority": 1000000,
+      "initializationOptions": {
+        "ignore-classpath-directories": true
+      }
+    }
+  },
+  "pyright": {
+    "disableLanguageServices": false,
+    "disableOrganizeImports": false
+  },
+  "python.analysis.typeCheckingMode": "off",
+  "diagnostic.messageTarget": "echo",
+  "inlayHint.enable": false
+}

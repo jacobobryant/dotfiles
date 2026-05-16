@@ -1,0 +1,16 @@
+[user]
+	email = git@jacobobryant.com
+	name = Jacob O'Bryant
+[core]
+	editor = nvim
+	#excludesfile = /home/jacob/.git/gitignore
+[push]
+	autoSetupRemote = true
+[init]
+	defaultBranch = master
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
