@@ -5,7 +5,7 @@ export HOMEBREW_NO_ENV_HINTS=true
 
 #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$? \[\033[00m\]\[\033[01;36m\]\w\[\033[00m\] \$ '
 # a bit darker:
-PS1='\[\033]0;\u@\h \W\007\]${debian_chroot:+($debian_chroot)}\[\033[0;32m\]$? \[\033[00m\]\u@\h \[\033[0;36m\]\w\[\033[00m\] \$ '
+PS1='\[\033]0;\u@\h \W\007\]${debian_chroot:+($debian_chroot)}\u@\h \[\033[0;32m\]$? \[\033[00m\]\[\033[0;36m\]\w\[\033[00m\] \$ '
 #LS_COLORS=$LS_COLORS:'di=0;35:' ; export LS_COLORS
 
 
