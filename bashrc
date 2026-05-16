@@ -65,3 +65,7 @@ else
   export PATH=/c/Users/micro/.local/bin:$PATH
 
 fi
+
+if [ -f /usr/share/bash-completion/completions/git ]; then
+   . /usr/share/bash-completion/completions/git
+fi
