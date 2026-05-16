@@ -5,7 +5,7 @@ export HOMEBREW_NO_ENV_HINTS=true
 
 #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$? \[\033[00m\]\[\033[01;36m\]\w\[\033[00m\] \$ '
 # a bit darker:
-PS1='${debian_chroot:+($debian_chroot)}\[\033[0;32m\]$? \[\033[00m\]\[\033[0;36m\]\w\[\033[00m\] \$ '
+PS1='\[\033]0;\u@\h \W\007\]${debian_chroot:+($debian_chroot)}\u@\h \[\033[0;32m\]$? \[\033[00m\]\[\033[0;36m\]\w\[\033[00m\] \$ '
 #LS_COLORS=$LS_COLORS:'di=0;35:' ; export LS_COLORS
 
 
@@ -22,9 +22,6 @@ alias gitwip='git add . && git commit --no-verify -m wip'
 alias gitsha='git rev-parse --short HEAD'
 alias fly=flyctl
 alias vim=nvim
-
-# Set gnome-terminal tab title to current directory
-PROMPT_COMMAND='echo -ne "$USER@$HOSTNAME \033]0;$(basename ${PWD})\007"'
 
 HISTSIZE=100000
 HISTFILESIZE=200000
