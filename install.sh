@@ -5,7 +5,7 @@ ln -sf $PWD/coc-settings.json ~/.config/nvim/
 echo "source $PWD/bashrc" >> ~/.bashrc
 ln -sf $PWD/dircolors ~/.dircolors
 ln -sf $PWD/gitconfig ~/.gitconfig
-ln -sf $PWD/AGENTS.md ~/AGENTS.md
+ln -sf $PWD/DEFAULT_AGENTS.md ~/AGENTS.md
 
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 sudo rm -rf /opt/nvim-linux-x86_64

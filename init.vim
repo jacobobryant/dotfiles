@@ -256,8 +256,8 @@ syntax on
 if executable('ag')
   " Use ag over grep
   " TODO only search files tracked by git
-  "set grepprg=ag\ --nogroup\ --nocolor
-  set grepprg=rg\ --vimgrep
+  set grepprg=ag\ --nogroup\ --nocolor
+  "set grepprg=rg\ --vimgrep
 endif
 nnoremap <Leader>* :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 

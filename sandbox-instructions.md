@@ -82,6 +82,72 @@ Then renew networking in the container or restart it:
 incus restart my-dev-box
 ```
 
+## Route a hostname to a container app through the host's Caddy
+
+If the host machine already runs Caddy and terminates TLS for your domains, the simplest setup is:
+
+1. keep Caddy on the **host**
+2. expose the container app on a **host-local TCP port** with an Incus proxy device
+3. point a hostname such as `dev.example.com` at the host
+4. add a Caddy site block that reverse proxies to that host-local port
+
+This avoids ngrok entirely and avoids depending on the container's internal bridge IP staying stable.
+
+### Example: route `dev.obryant.dev` to port 8080 in container `my-dev-box`
+
+On the **host**, add an Incus proxy device that listens only on loopback:
+
+```bash
+incus config device add my-dev-box app8080 proxy \
+  listen=tcp:127.0.0.1:18080 \
+  connect=tcp:127.0.0.1:8080 \
+  bind=host
+```
+
+That makes the host forward `127.0.0.1:18080` to `127.0.0.1:8080` inside the container.
+
+Check it from the host:
+
+```bash
+curl -I http://127.0.0.1:18080
+```
+
+Then add a Caddy site block on the **host**, for example:
+
+```caddyfile
+dev.obryant.dev {
+  reverse_proxy 127.0.0.1:18080
+}
+```
+
+Reload Caddy:
+
+```bash
+sudo caddy reload --config /etc/caddy/Caddyfile
+```
+
+### DNS
+
+Point the hostname at the **host machine that runs Caddy**, not at the container.
+
+Use whichever of these fits your DNS setup:
+
+- **A record**: `dev.obryant.dev -> <host IPv4>`
+- **AAAA record**: `dev.obryant.dev -> <host IPv6>`
+- **CNAME record**: `dev.obryant.dev -> <some existing hostname that already resolves to that same host>`
+
+If you already have a wildcard or existing DNS entry that reaches the same host, you may not need a new record at all.
+
+### Notes
+
+- Keep the Incus proxy listener on `127.0.0.1` unless you intentionally want the host port exposed publicly.
+- This works well with host-side TLS, because the browser talks HTTPS to Caddy on the host, and Caddy talks plain HTTP to the container app over loopback.
+- If you want to remove the forwarding later:
+
+```bash
+incus config device remove my-dev-box app8080
+```
+
 ## Useful Incus commands
 
 | Task | Command |
