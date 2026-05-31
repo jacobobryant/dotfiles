@@ -62,10 +62,6 @@ endfunction
 
 Plug 'img-paste-devs/img-paste.vim'
 
-Plug 'junegunn/vim-easy-align'
-
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-
 call plug#end()
 
 
@@ -111,16 +107,16 @@ set sessionoptions=curdir,folds,help,tabpages,winsize
 " gutentags
 " use <C-]> for go to definition
 "let g:gutentags_trace = 1
-set tags=./.tags,.tags;
-"let g:gutentags_enabled = 1
-let g:gutentags_ctags_tagfile = '.tags'
-let g:gutentags_file_list_command = {
-      \ 'markers': {
-      \ '.git': 'git-ls-files',
-      \ },
-      \ }
-let g:gutentags_generate_on_new = 1
-let g:gutentags_define_advanced_commands = 1
+"set tags=./.tags,.tags;
+""let g:gutentags_enabled = 1
+"let g:gutentags_ctags_tagfile = '.tags'
+"let g:gutentags_file_list_command = {
+"      \ 'markers': {
+"      \ '.git': 'git-ls-files',
+"      \ },
+"      \ }
+"let g:gutentags_generate_on_new = 1
+"let g:gutentags_define_advanced_commands = 1
 
 " nerdtree
 let g:NERDTreeWinSize=55
@@ -166,15 +162,15 @@ let g:rainbow_conf = {
 " conjure / clojure
 map <leader>CB :ConjureConnect 7888<cr><cr>
 map <leader>R :ConjureEval ((requiring-resolve 'development/restart))<cr>
-map <leader>CC :ConjureEval ((requiring-resolve 'com.tybaenergy.lib.expose-api/generate-stub-vars!))<cr>
+"map <leader>CC :ConjureEval ((requiring-resolve 'com.tybaenergy.lib.expose-api/generate-stub-vars!))<cr>
 map <leader>S :ConjureShadowSelect main<cr>
 map <leader>P :ConjureEval (user.local/start-portal)<cr>
 
 " img paste
-autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
+"autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 " there are some defaults for image directory and image name, you can change them
-let g:mdip_imgdir_absolute = '/home/jacob/dev/com.biffweb/resources/public/images'
-let g:mdip_imgdir_intext = '/images'
+"let g:mdip_imgdir_absolute = '/home/jacob/dev/com.biffweb/resources/public/images'
+"let g:mdip_imgdir_intext = '/images'
 " let g:mdip_imgname = 'image'
 
 "======END PLUGIN CONFIG=====
@@ -310,7 +306,7 @@ let g:ftplugin_sql_omni_key = '<C-j>'
 
 "let g:python3_host_prog = '/home/jacob/dev/py-nvim-env/bin/python'
 "TODO
-let g:python3_host_prog = '/home/jacob/.pyenv/shims/python'
+"let g:python3_host_prog = '/home/jacob/.pyenv/shims/python'
 
 nnoremap <LeftMouse> ma<LeftMouse>`a
 
@@ -319,23 +315,23 @@ set termguicolors
 syntax enable
 
 " Light
-color peachpuff
-hi MatchParen guifg=white
-hi Todo gui=bold guibg=None guifg=darkorange
-hi CocInlayHint guifg=darkorange
+"color peachpuff
+"hi MatchParen guifg=white
+"hi Todo gui=bold guibg=None guifg=darkorange
+"hi CocInlayHint guifg=darkorange
 
 " Dark
-"color desert
-"hi default link BufTabLineCurrent WildMenu
-"hi Search cterm=NONE ctermfg=white ctermbg=darkblue
-"hi VertSplit cterm=NONE ctermfg=white ctermbg=NONE
-"hi NormalFloat ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
-"hi Statement gui=NONE
-"hi diffAdded guifg=#34d399
-"hi diffRemoved guifg=#f87171
-"hi StatusLineNC guifg=#444444
-"hi ColorColumn guibg=#3f3f3f
-"hi Todo gui=bold guibg=None guifg=Yellow
+color desert
+hi default link BufTabLineCurrent WildMenu
+hi Search cterm=NONE ctermfg=white ctermbg=darkblue
+hi VertSplit cterm=NONE ctermfg=white ctermbg=NONE
+hi NormalFloat ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+hi Statement gui=NONE
+hi diffAdded guifg=#34d399
+hi diffRemoved guifg=#f87171
+hi StatusLineNC guifg=#444444
+hi ColorColumn guibg=#3f3f3f
+hi Todo gui=bold guibg=None guifg=Yellow
 
 set colorcolumn=101
 

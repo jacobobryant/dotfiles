@@ -4,6 +4,7 @@
   "clojure-lsp.trace.server": "verbose",
   "diagnostic.showUnused": true,
   "diagnostic.showDeprecated": true,
+  "diagnostic.enableMessage": "jump",
   "suggest.autoTrigger": "none",
   "suggest.floatEnable": "false",
   "signature.target": "echo",
@@ -27,6 +28,6 @@
     "disableOrganizeImports": false
   },
   "python.analysis.typeCheckingMode": "off",
-  "diagnostic.messageTarget": "echo",
+  "diagnostic.messageTarget": "float",
   "inlayHint.enable": false
 }
