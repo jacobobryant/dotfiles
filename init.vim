@@ -29,7 +29,7 @@ endfunction
 
  " handy git commands like Gread and Gblame
  " example: see version of current file on master with `:Gread master:%`
- Plug 'tpope/vim-fugitive'
+ Plug 'jacobobryant/vim-fugitive'
  " enable the :GBrowse fugitive command
  Plug 'tpope/vim-rhubarb'
 
@@ -210,7 +210,7 @@ set nostartofline
 set autoindent
 set nofixendofline
 set exrc
-set textwidth=100
+set textwidth=80
 set wildmode=longest,list
 
 nnoremap    s           :set invspell<cr>
@@ -314,26 +314,41 @@ nnoremap <LeftMouse> ma<LeftMouse>`a
 set termguicolors
 syntax enable
 
-" Light
-"color peachpuff
-"hi MatchParen guifg=white
-"hi Todo gui=bold guibg=None guifg=darkorange
-"hi CocInlayHint guifg=darkorange
+function! ApplyLightTheme() abort
+  let g:theme_is_dark = 0
+  color peachpuff
+  hi MatchParen guifg=white
+  hi Todo gui=bold guibg=None guifg=darkorange
+  hi CocInlayHint guifg=darkorange
+  set colorcolumn=81
+endfunction
 
-" Dark
-color desert
-hi default link BufTabLineCurrent WildMenu
-hi Search cterm=NONE ctermfg=white ctermbg=darkblue
-hi VertSplit cterm=NONE ctermfg=white ctermbg=NONE
-hi NormalFloat ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
-hi Statement gui=NONE
-hi diffAdded guifg=#34d399
-hi diffRemoved guifg=#f87171
-hi StatusLineNC guifg=#444444
-hi ColorColumn guibg=#3f3f3f
-hi Todo gui=bold guibg=None guifg=Yellow
+function! ApplyDarkTheme() abort
+  let g:theme_is_dark = 1
+  color desert
+  hi default link BufTabLineCurrent WildMenu
+  hi Search cterm=NONE ctermfg=white ctermbg=darkblue
+  hi VertSplit cterm=NONE ctermfg=white ctermbg=NONE
+  hi NormalFloat ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+  hi Statement gui=NONE
+  hi diffAdded guifg=#34d399
+  hi diffRemoved guifg=#f87171
+  hi StatusLineNC guifg=#444444
+  hi ColorColumn guibg=#3f3f3f
+  hi Todo gui=bold guibg=None guifg=Yellow
+  set colorcolumn=81
+endfunction
 
-set colorcolumn=101
+function! ToggleTheme() abort
+  if get(g:, 'theme_is_dark', 0)
+    call ApplyLightTheme()
+  else
+    call ApplyDarkTheme()
+  endif
+endfunction
+
+call ApplyLightTheme()
+nnoremap <leader>D :call ToggleTheme()<cr>
 
 
 nnoremap <silent> <C-]> <leader>gd
@@ -357,4 +372,3 @@ hi CocMenuSel guibg=#666666 guifg=white
 
 
 "let g:conjure#client#python#stdio#command = 'poetry -C /home/jacob/work/deep-dispatch run python'
-
