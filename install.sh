@@ -1,7 +1,9 @@
 #!/bin/bash
 mkdir -p ~/.config/nvim
+mkdir -p ~/.config/gtk-4.0
 ln -sf $PWD/init.vim ~/.config/nvim/
 ln -sf $PWD/coc-settings.json ~/.config/nvim/
+ln -sf $PWD/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk.css
 echo "source $PWD/bashrc" >> ~/.bashrc
 ln -sf $PWD/dircolors ~/.dircolors
 ln -sf $PWD/gitconfig ~/.gitconfig
@@ -15,7 +17,7 @@ sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
-sudo apt install silversearcher-ag unzip
+sudo apt install silversearcher-ag unzip ptyxis
 
 curl -fsSL https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install -o /tmp/clojure-lsp-install.sh
 sudo bash /tmp/clojure-lsp-install.sh

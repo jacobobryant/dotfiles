@@ -1,0 +1,41 @@
+/* Hide the title/header bar in Ubuntu's default terminal (Ptyxis). */
+window.ptyxis-window .visual-bell-area {
+  min-height: 0;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: -24px;
+  border: 0;
+  opacity: 0;
+  transform: translateY(-24px);
+}
+
+window.ptyxis-window .visual-bell-area > * {
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+window.ptyxis-window headerbar.main-header-bar {
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+  opacity: 0;
+}
+
+window.ptyxis-window headerbar.main-header-bar windowhandle,
+window.ptyxis-window headerbar.main-header-bar box,
+window.ptyxis-window headerbar.main-header-bar button,
+window.ptyxis-window headerbar.main-header-bar menubutton,
+window.ptyxis-window headerbar.main-header-bar windowtitle,
+window.ptyxis-window headerbar.main-header-bar label {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  font-size: 0;
+  opacity: 0;
+}
