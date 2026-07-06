@@ -347,7 +347,7 @@ function! ToggleTheme() abort
   endif
 endfunction
 
-call ApplyLightTheme()
+call ApplyDarkTheme()
 nnoremap <leader>D :call ToggleTheme()<cr>
 
 
