@@ -66,3 +66,5 @@ fi
 if [ -f /usr/share/bash-completion/completions/git ]; then
    . /usr/share/bash-completion/completions/git
 fi
+
+export DOCKER_SANDBOXES_ENABLE_VIRTIOFS_CACHE=0
