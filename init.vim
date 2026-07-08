@@ -317,6 +317,8 @@ syntax enable
 function! ApplyLightTheme() abort
   let g:theme_is_dark = 0
   color peachpuff
+  "set guicursor=a:block-Cursor
+  hi Cursor guibg=#005f87 guifg=#ffdab9
   hi MatchParen guifg=white
   hi Todo gui=bold guibg=None guifg=darkorange
   hi CocInlayHint guifg=darkorange
@@ -326,6 +328,8 @@ endfunction
 function! ApplyDarkTheme() abort
   let g:theme_is_dark = 1
   color desert
+  set guicursor=a:block-Cursor
+  hi Cursor guibg=#ffffff guifg=black
   hi default link BufTabLineCurrent WildMenu
   hi Search cterm=NONE ctermfg=white ctermbg=darkblue
   hi VertSplit cterm=NONE ctermfg=white ctermbg=NONE

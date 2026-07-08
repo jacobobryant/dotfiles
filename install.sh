@@ -9,6 +9,10 @@ ln -sf $PWD/dircolors ~/.dircolors
 ln -sf $PWD/gitconfig ~/.gitconfig
 ln -sf $PWD/DEFAULT_AGENTS.md ~/AGENTS.md
 
+mkdir -p ~/.claude ~/.codex
+rm -rf ~/.claude/commands && ln -sfn $PWD/skills ~/.claude/commands   # Claude Code
+rm -rf ~/.codex/prompts  && ln -sfn $PWD/skills ~/.codex/prompts      # Codex
+
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
 sudo rm -rf /opt/nvim-linux-x86_64
 sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
