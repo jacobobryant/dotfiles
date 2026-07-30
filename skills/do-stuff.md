@@ -24,18 +24,18 @@ the planning and implementing steps, use an async-ish communication approach:
   and then update the plan file. The questions file does not need to include
   instructions about how to use the file--the user already knows how.
 
-- Use a subagent(s) to do planning/research/implementation work so that you can
-  watch for changes to the plan file while the subagent works. If needed you can
-  then kill the subagent and start a new one with a different direction.
+- As you go, try to check the plan file at least once every couple minutes,
+  since if the direction has changed significantly, whatever you're working on
+  may no longer be needed.
 
-- Subagents should not wait to receive answers to questions, especially in the
-  implementation phase. Do the best with the information you have, and you can
-  always redo work later after the user updates the plan file.
+- Never wait to receive answers to questions, especially in the implementation
+  phase, except as described in this task. Do the best with the information you
+  have, and you can always redo work later after the user updates the plan file.
 
-- Put a "status" section at the top of the questions file that describes briefly
-  what the subagent(s) are doing currently (or if you've finished everything and
-  are waiting for additional plan updates/confirmation that the current phase is
-  complete).
+- Put a "todo" section at the top of the questions file that has a brief
+  bulleted list of what you're currently doing and what you'll be doing next.
+  One line per bullet is sufficient. If all work is finished and you don't have
+  any open questions, the questions file should be empty.
 
 The user may still use the regular CLI prompt to ask questions/discuss things,
 but instructions will come via the plan file.
@@ -59,12 +59,11 @@ understanding. At this point the questions file should be empty.
 
 ## Implement
 
-Use a subagent(s) for implementation so it has fresh context. As you implement,
-if additional questions arise, put them in the questions file. Continue watching
-the plan file for changes, and delete your questions when they're answered
-fully. Again, don't pause implementation work to wait for an answer: make your
-best guess and keep going until the user gives you more direction via the plan
-file.
+As you implement, if additional questions arise, put them in the questions file.
+Continue checking the plan file for changes, and delete your questions when
+they're answered fully. Again, don't pause implementation work to wait for an
+answer: make your best guess and keep going until the user gives you more
+direction via the plan file.
 
 Verify all your work. Don't leave any verification steps to the user.
 
