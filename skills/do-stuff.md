@@ -13,12 +13,8 @@ the planning and implementing steps, use an async-ish communication approach:
 - Whenever you finish a turn, start polling the plan file every 2 seconds to see
   if it's been modified.
 
-- The plan file will be in its own git repo, separate from the git repo the code
-  is in. Pay particular attention to unstaged changes in the plan file. The user
-  will stage parts of the plan file that have been implemented to their
-  satisfaction. Also, whenever you read the plan file you should copy it into a
-  scratch space. Then when there are future changes you can use `diff` to see
-  exactly what changed.
+- Whenever you read the plan file you should copy it into a scratch space. Then
+  when there are future changes you can use `diff` to see exactly what changed.
 
 - Write your questions to the questions file as you go. The user will read them
   and then update the plan file. The questions file does not need to include
