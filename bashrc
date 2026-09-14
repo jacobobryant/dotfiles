@@ -1,5 +1,5 @@
 # vim: ft=bash
-alias cljrun='clj -M:run'
+alias cljrun='clojure -M:run'
 
 export HOMEBREW_NO_ENV_HINTS=true
 
