@@ -10,7 +10,7 @@
 	defaultBranch = master
 [credential "https://github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = "!f() { GH_TOKEN=\"${GITHUB_PAT:-$GH_TOKEN}\" /usr/bin/gh auth git-credential \"$@\"; }; f"
 	helper = store
 [credential "https://gist.github.com"]
 	helper = 

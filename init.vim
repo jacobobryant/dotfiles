@@ -248,12 +248,12 @@ filetype plugin on
 "filetype plugin indent on
 syntax on
 
-" The Silver Searcher
-if executable('ag')
-  " Use ag over grep
-  " TODO only search files tracked by git
-  set grepprg=ag\ --nogroup\ --nocolor
-  "set grepprg=rg\ --vimgrep
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ --smart-case
+  set grepformat=%f:%l:%c:%m
+elseif executable('ag')
+  set grepprg=ag\ --vimgrep\ --smart-case
+  set grepformat=%f:%l:%c:%m
 endif
 nnoremap <Leader>* :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
