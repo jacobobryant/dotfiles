@@ -76,3 +76,11 @@ fi
 if [[ $HOME == /home/agent ]]; then
   source ~/workspace/env.sh
 fi
+
+alias init-review='git add -N $(git ls-files --others --exclude-standard)'
+
+function box {
+  sbx exec -it $1 bash
+}
+alias bud='sbx run --name bud'
+alias skip='sbx run --name skip'

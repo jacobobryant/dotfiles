@@ -3,6 +3,7 @@
 	name = Jacob O'Bryant
 [core]
 	editor = nvim
+	excludesfile = /home/jacob/dotfiles/gitignore
 	#excludesfile = /home/jacob/.git/gitignore
 [push]
 	autoSetupRemote = true
