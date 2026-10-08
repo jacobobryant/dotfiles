@@ -68,3 +68,11 @@ if [ -f /usr/share/bash-completion/completions/git ]; then
 fi
 
 export DOCKER_SANDBOXES_ENABLE_VIRTIOFS_CACHE=0
+
+alias init-review='git add -N $(git ls-files --others --exclude-standard)'
+
+function box {
+  sbx exec -it $1 bash
+}
+alias bud='sbx run --name bud'
+alias skip='sbx run --name skip'

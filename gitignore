@@ -1,0 +1,13 @@
+.claude
+.clj-kondo/.cache
+.lsp
+.tags
+repl.py
+stuff.py
+fc-examples
+local.clj
+local.cljs
+repro.cljs
+.tags.lock
+.tags.temp
+.clj-kondo

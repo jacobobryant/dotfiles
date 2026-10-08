@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+# Check out a PR as a set of uncommitted working-tree changes, so the whole PR
+# reads as one diff against the point it branched off its base.
+#
+#   bin/review 123            # -> branch `review`, reset to the PR's merge base
+#   bin/review 123 my-review  # -> same, but name the branch `my-review`
+#
+# Equivalent to:
+#   git fetch origin main
+#   gh pr checkout 123 --branch review
+#   git reset $(git merge-base origin/main HEAD)
+#
+# The base branch may have moved on since the PR was opened; we reset to the
+# *fork point*, not to the tip of the base, so unrelated commits that landed on
+# the base in the meantime don't show up in the diff.
+
+set -euo pipefail
+
+die() { echo "error: $*" >&2; exit 1; }
+
+# Read a line of input, preferring the terminal so this still works when stdin
+# is a pipe. Fails (and so cancels, under `set -e`) on EOF.
+ask() {
+  local prompt=$1 __var=$2 reply=""
+  printf '%s' "$prompt" >&2
+  # /dev/tty can exist but be unopenable (no controlling terminal), so try it
+  # rather than testing for it.
+  if { exec 3</dev/tty; } 2>/dev/null; then
+    read -r reply <&3 || { exec 3<&-; return 1; }
+    exec 3<&-
+  else
+    read -r reply || return 1
+  fi
+  printf -v "$__var" '%s' "$reply"
+}
+
+usage() {
+  echo "usage: $(basename "$0") <pr-number> [branch-name]" >&2
+  exit 2
+}
+
+[[ $# -ge 1 && $# -le 2 ]] || usage
+pr=$1
+branch=${2:-review}
+
+[[ $pr =~ ^[0-9]+$ ]] || die "'$pr' is not a PR number"
+command -v gh >/dev/null || die "the 'gh' CLI is required but not installed"
+git rev-parse --git-dir >/dev/null 2>&1 || die "not inside a git repository"
+
+# A mixed reset leaves the PR's contents in the working tree, so anything
+# already uncommitted there -- untracked files included, since we mark those
+# intent-to-add at the end -- would get silently mixed into the review diff.
+dirty=$(git status --porcelain)
+if [[ -n $dirty ]]; then
+  echo "$dirty" >&2
+  die "working tree is not clean; commit, stash, or clean the above first"
+fi
+
+# ---------------------------------------------------------------- PR metadata
+
+read -r base head_oid title < <(
+  gh pr view "$pr" --json baseRefName,headRefOid,title \
+    --jq '[.baseRefName, .headRefOid, .title] | @tsv' | tr '\t' ' '
+) || die "could not read PR #$pr (is 'gh' authenticated, and is this the right repo?)"
+[[ -n $base ]] || die "could not determine the base branch of PR #$pr"
+
+# The base branch lives on the *base* repo, which is not necessarily `origin`
+# when the PR comes from a fork. Find the remote pointing at the PR's URL repo.
+pr_url=$(gh pr view "$pr" --json url --jq .url)
+base_nwo=$(sed -E 's#^.*github\.com[:/]+([^/]+/[^/]+)/pull/.*$#\1#' <<<"$pr_url")
+
+base_remote=""
+for remote in $(git remote); do
+  # Both the raw configured URL and the url.<..>.insteadOf-rewritten one, since
+  # either may be the form that names the GitHub repo.
+  for url in "$(git config --get "remote.$remote.url" || true)" \
+             "$(git remote get-url "$remote" 2>/dev/null || true)"; do
+    nwo=$(sed -E -e 's#\.git$##' -e 's#^.*github\.com[:/]+##' <<<"$url")
+    if [[ $nwo == "$base_nwo" ]]; then
+      base_remote=$remote
+      break 2
+    fi
+  done
+done
+[[ -n $base_remote ]] || base_remote=origin
+
+echo "PR #$pr: $title"
+echo "  base:   $base_remote/$base"
+echo "  head:   ${head_oid:0:12}"
+echo
+
+# --------------------------------------------------------- pick a branch name
+
+branch_exists() { git show-ref --verify --quiet "refs/heads/$1"; }
+
+while branch_exists "$branch"; do
+  echo "branch '$branch' already exists."
+  echo "  [f] force-reset it to PR #$pr"
+  echo "  [n] use a different branch name"
+  echo "  [c] cancel"
+  ask "choice [f/n/c]: " choice || die "cancelled"
+  case ${choice,,} in
+    f) break ;;
+    n)
+      ask "new branch name: " branch || die "cancelled"
+      [[ -n $branch ]] || die "no branch name given"
+      ;;
+    c|"") die "cancelled" ;;
+    *) echo "didn't understand '$choice'." ;;
+  esac
+  echo
+done
+
+# ------------------------------------------------------------------- do the work
+
+git fetch "$base_remote" "$base"
+
+# `gh pr checkout --branch` won't clobber an existing branch, and git refuses to
+# force-update a branch that's currently checked out, so detach and delete first.
+if branch_exists "$branch"; then
+  [[ $(git symbolic-ref --quiet --short HEAD || echo) == "$branch" ]] && git checkout --detach --quiet
+  git branch -D "$branch"
+fi
+
+gh pr checkout "$pr" --branch "$branch"
+
+# gh points the new branch at the contributor's branch; drop that so a stray
+# `git push` from a review branch can't rewrite someone else's PR.
+git branch --unset-upstream 2>/dev/null || true
+
+# Fast-forward the local base branch too, so `git log main..` etc. read right.
+if [[ $base != "$branch" ]]; then
+  git fetch "$base_remote" "$base:$base" 2>/dev/null ||
+    echo "note: left local '$base' alone (it has diverged from $base_remote/$base)"
+fi
+
+merge_base=$(git merge-base "$base_remote/$base" HEAD) ||
+  die "no common ancestor between $base_remote/$base and PR #$pr"
+
+echo
+echo "resetting to fork point ${merge_base:0:12} ($(git log -1 --format=%s "$merge_base"))"
+git reset "$merge_base"
+
+# Files the PR adds are untracked after the reset; mark them intent-to-add so
+# they show up in `git diff` along with everything else.
+if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+  git ls-files --others --exclude-standard -z | xargs -0 git add -N
+fi
+
+echo
+echo "on '$branch' at $base_remote/$base fork point; PR #$pr is now your working diff:"
+echo "  git diff            # the whole PR"
+echo "  git diff --stat"
+echo "  git reset --hard && git clean -fd    # when you're done"

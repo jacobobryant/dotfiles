@@ -47,9 +47,9 @@ shared understanding. Walk down each branch of the design tree, resolving
 dependencies between decisions one-by-one. For each question, provide your
 recommended answer.
 
-List the questions sequentially in the plan file. Revise your questions as the
-plan file gets updated. When a question is answered fully, remove it from the
-questions file.
+List the questions sequentially in the questions file. Revise your questions as
+the plan file gets updated. When a question is answered fully, remove it from
+the questions file.
 
 If a fact can be found by exploring the codebase, look it up rather than asking
 me.
