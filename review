@@ -18,22 +18,6 @@ set -euo pipefail
 
 die() { echo "error: $*" >&2; exit 1; }
 
-# Read a line of input, preferring the terminal so this still works when stdin
-# is a pipe. Fails (and so cancels, under `set -e`) on EOF.
-ask() {
-  local prompt=$1 __var=$2 reply=""
-  printf '%s' "$prompt" >&2
-  # /dev/tty can exist but be unopenable (no controlling terminal), so try it
-  # rather than testing for it.
-  if { exec 3</dev/tty; } 2>/dev/null; then
-    read -r reply <&3 || { exec 3<&-; return 1; }
-    exec 3<&-
-  else
-    read -r reply || return 1
-  fi
-  printf -v "$__var" '%s' "$reply"
-}
-
 usage() {
   echo "usage: $(basename "$0") <pr-number> [branch-name]" >&2
   exit 2
@@ -46,15 +30,7 @@ branch=${2:-review}
 [[ $pr =~ ^[0-9]+$ ]] || die "'$pr' is not a PR number"
 command -v gh >/dev/null || die "the 'gh' CLI is required but not installed"
 git rev-parse --git-dir >/dev/null 2>&1 || die "not inside a git repository"
-
-# A mixed reset leaves the PR's contents in the working tree, so anything
-# already uncommitted there -- untracked files included, since we mark those
-# intent-to-add at the end -- would get silently mixed into the review diff.
-dirty=$(git status --porcelain)
-if [[ -n $dirty ]]; then
-  echo "$dirty" >&2
-  die "working tree is not clean; commit, stash, or clean the above first"
-fi
+git check-ref-format --branch "$branch" >/dev/null || die "invalid branch name '$branch'"
 
 # ---------------------------------------------------------------- PR metadata
 
@@ -89,36 +65,26 @@ echo "  base:   $base_remote/$base"
 echo "  head:   ${head_oid:0:12}"
 echo
 
-# --------------------------------------------------------- pick a branch name
-
 branch_exists() { git show-ref --verify --quiet "refs/heads/$1"; }
-
-while branch_exists "$branch"; do
-  echo "branch '$branch' already exists."
-  echo "  [f] force-reset it to PR #$pr"
-  echo "  [n] use a different branch name"
-  echo "  [c] cancel"
-  ask "choice [f/n/c]: " choice || die "cancelled"
-  case ${choice,,} in
-    f) break ;;
-    n)
-      ask "new branch name: " branch || die "cancelled"
-      [[ -n $branch ]] || die "no branch name given"
-      ;;
-    c|"") die "cancelled" ;;
-    *) echo "didn't understand '$choice'." ;;
-  esac
-  echo
-done
 
 # ------------------------------------------------------------------- do the work
 
 git fetch "$base_remote" "$base"
 
+current_branch=$(git symbolic-ref --quiet --short HEAD || true)
+if [[ -n $(git status --porcelain) ]]; then
+  if [[ $current_branch == review ]]; then
+    git reset --hard HEAD
+    git clean -fd
+  else
+    git stash push --include-untracked -m "review: before PR #$pr"
+  fi
+fi
+
 # `gh pr checkout --branch` won't clobber an existing branch, and git refuses to
 # force-update a branch that's currently checked out, so detach and delete first.
 if branch_exists "$branch"; then
-  [[ $(git symbolic-ref --quiet --short HEAD || echo) == "$branch" ]] && git checkout --detach --quiet
+  [[ $current_branch == "$branch" ]] && git checkout --detach --quiet
   git branch -D "$branch"
 fi
 
