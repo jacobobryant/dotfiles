@@ -68,3 +68,11 @@ if [ -f /usr/share/bash-completion/completions/git ]; then
 fi
 
 export DOCKER_SANDBOXES_ENABLE_VIRTIOFS_CACHE=0
+
+if [[ -n ${SANDBOX_ID:-} && $HOME == /home/agent && -x "$HOME/workspace/start-git-daemon" ]]; then
+  (nohup "$HOME/workspace/start-git-daemon" </dev/null >/dev/null 2>&1 &)
+fi
+
+if [[ $HOME == /home/agent ]]; then
+  source ~/workspace/env.sh
+fi
